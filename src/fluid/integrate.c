@@ -18,11 +18,7 @@ static int copy_fields(
       direction ? field->s_x1_array : field->s_x1_array_int;
     fftw_complex * restrict buf1 =
       direction ? field->s_x1_array_int : field->s_x1_array;
-#if NDIMS == 2
-    const size_t nitems = mysizes[0] * mysizes[1];
-#else
     const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
     memcpy(buf1, buf0, nitems * sizeof(fftw_complex));
   }
   return 0;
