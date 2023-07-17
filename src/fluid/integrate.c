@@ -31,11 +31,7 @@ static int copy_fields(
       const size_t * mysizes = domain->s_x1_mysizes;
       const fftw_complex * restrict buf0 = field->s_x1_array;
       fftw_complex * restrict buf1 = field->s_x1_array_int;
-#if NDIMS == 2
       const size_t nitems = mysizes[0] * mysizes[1];
-#else
-      const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
       memcpy(buf1, buf0, nitems * sizeof(fftw_complex));
     }else{
       // swap buffers

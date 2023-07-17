@@ -7,15 +7,10 @@
 #include "runge_kutta.h"
 
 typedef struct {
-  // array in spectral domain, x1 pencil | 1
+  // array in spectral domain, x1 pencil 
   fftw_complex * restrict s_x1_array;
-#if NDIMS == 2
-  // array in physical domain, y1 pencil | 1
+  // array in physical domain, y1 pencil 
   double * restrict p_y1_array;
-#else
-  // array in physical domain, z1 pencil | 1
-  double * restrict p_z1_array;
-#endif
   // storage to store intermediate field A^{0,1,2,...,RKSTEPMAX-1} of RK scheme
   fftw_complex * restrict s_x1_array_int;
   // storage to store slopes (right-hand-side terms) of RK schemes
@@ -27,9 +22,6 @@ typedef struct {
 typedef enum {
   enum_ux,
   enum_uy,
-#if NDIMS == 3
-  enum_uz,
-#endif
   enum_sc,
 } field_number_t;
 
