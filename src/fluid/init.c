@@ -18,35 +18,13 @@ static int allocate_and_init_mask(
 ){
   // allocate (this is x1 pencil in spectral domain)
   const size_t * mysizes = domain->s_x1_mysizes;
-#if NDIMS == 2
-  const size_t nitems = mysizes[0] * mysizes[1];
-#else
   const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
   *mask = memory_fftw_calloc(nitems, sizeof(bool));
   // create mask
   const size_t * glsizes = domain->s_glsizes;
   const int * xwaves = domain->x1_xwaves;
   const int * ywaves = domain->x1_ywaves;
-#if NDIMS == 3
   const int * zwaves = domain->x1_zwaves;
-#endif
-#if NDIMS == 2
-  for(size_t index = 0, j = 0; j < mysizes[1]; j++){
-    const int ky = ywaves[j];
-    for(size_t i = 0; i < mysizes[0]; i++, index++){
-      const int kx = xwaves[i];
-      if(
-             iabs(kx) >= glsizes[0] / 3
-          || iabs(ky) >= glsizes[1] / 3
-      ){
-        (*mask)[index] = false;
-      }else{
-        (*mask)[index] = true;
-      }
-    }
-  }
-#else
   for(size_t index = 0, k = 0; k < mysizes[2]; k++){
     const int kz = zwaves[k];
     for(size_t j = 0; j < mysizes[1]; j++){
@@ -65,7 +43,6 @@ static int allocate_and_init_mask(
       }
     }
   }
-#endif
   return 0;
 }
 
@@ -79,11 +56,7 @@ static int allocate_and_init_field(
   // main and sub fields in spectral domain
   {
     const size_t * mysizes = domain->s_x1_mysizes;
-#if NDIMS == 2
-    const size_t nitems = mysizes[0] * mysizes[1];
-#else
     const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
     (*field)->s_x1_array     = memory_fftw_calloc(nitems, sizeof(fftw_complex));
     (*field)->s_x1_array_int = memory_fftw_calloc(nitems, sizeof(fftw_complex));
     for(size_t rkstep = 0; rkstep < RKSTEPMAX; rkstep++){
@@ -92,15 +65,9 @@ static int allocate_and_init_field(
   }
   // auxiliary field in physical domain to compute convolution sum
   {
-#if NDIMS == 2
-    const size_t * mysizes = domain->p_y1_mysizes;
-    const size_t nitems = mysizes[0] * mysizes[1];
-    (*field)->p_y1_array = memory_fftw_calloc(nitems, sizeof(double));
-#else
     const size_t * mysizes = domain->p_z1_mysizes;
     const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
     (*field)->p_z1_array = memory_fftw_calloc(nitems, sizeof(double));
-#endif
   }
   (*field)->diffusivity = diffusivity;
   return 0;
@@ -131,11 +98,9 @@ int fluid_init(
   if(0 != allocate_and_init_field(domain, &fluid->fields[enum_uy], 1. / Re     )){
     return 1;
   }
-#if NDIMS == 3
   if(0 != allocate_and_init_field(domain, &fluid->fields[enum_uz], 1. / Re     )){
     return 1;
   }
-#endif
   if(0 != allocate_and_init_field(domain, &fluid->fields[enum_sc], 1. / Re / Sc)){
     return 1;
   }
