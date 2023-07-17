@@ -18,7 +18,7 @@ typedef struct {
 #endif
   // storage to store intermediate field A^{0,1,2,...,RKSTEPMAX-1} of RK scheme
   fftw_complex * restrict s_x1_array_int;
-  // storage to store slopes (RHSs) of RK schemes
+  // storage to store slopes (right-hand-side terms) of RK schemes
   fftw_complex * restrict s_x1_slopes[RKSTEPMAX];
   // diffusivity of this quantity
   double diffusivity;

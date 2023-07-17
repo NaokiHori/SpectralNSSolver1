@@ -82,7 +82,8 @@ Quick start
 
 #. Set initial condition
 
-   A solenoidal velocity field should be given.
+   Although the scalar field can be arbitrary, the velocity field should be solenoidal.
+   ``main.py`` offers several examples.
 
    .. code-block:: console
 
@@ -106,7 +107,7 @@ Quick start
 
       bash exec.sh
 
-This may take a few minutes, depending on your machine spec.
+   This may take a few minutes, depending on your machine spec.
 
 The flow fields are saved under ``output/save/`` in `NPY <https://numpy.org/devdocs/reference/generated/numpy.lib.format.html>`_ format.
 Note that these velocities are in the spectral domain; you need to perform the inverse Fourier transform (and the normalisation) to recover the velocities in the physical domain.
@@ -116,8 +117,6 @@ If proper Python libraries are installed, you can visualise the flow fields by
 .. code-block:: console
 
    python3 visualise/2d.py
-
-This should give you a similar movie to the one you can see above.
 
 *************
 3D simulation

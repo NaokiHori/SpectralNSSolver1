@@ -15,9 +15,9 @@ and the momentum balance:
 .. math::
 
    \der{u_i}{t}
-   +
-   u_j \der{u_i}{x_j}
    =
+   -
+   u_j \der{u_i}{x_j}
    -
    \der{p}{x_i}
    +
@@ -32,9 +32,10 @@ Also a passive scalar field :math:`T` is transported, which is governed by the a
 .. math::
 
    \der{T}{t}
-   +
-   u_j \der{T}{x_j}
    =
+   -
+   u_j \der{T}{x_j}
+   +
    \frac{1}{Re Sc}
    \der{}{x_j} \der{T}{x_j},
 

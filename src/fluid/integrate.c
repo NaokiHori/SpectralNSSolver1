@@ -9,21 +9,40 @@
 static int copy_fields(
     const domain_t * domain,
     fluid_t * fluid,
-    const bool direction
+    const bool is_deep_copy
 ){
+  // two fields exist in fluid_t:
+  //   1. s_x1_array:     store main field
+  //   2. s_x1_array_int: store intermediate field
+  // this function performs their memory copies,
+  //   which are needed in the RK iterations
+  // in particular, copy from the main to the intermediate is
+  //   to be done at the beginning to set the initial RK field (for simplicity),
+  //   while the other way should be done at the end
+  //   to extract the RK result to the main field
+  // since the n-step (main) field is used throughout the RK iteration,
+  //   a deep copy is needed for the former, whereas a shallow copy is enough
+  //   for the latter since the intermediate field is not used
+  //   after the whole RK iterations
   for(size_t n = 0; n < NDIMS + 1; n++){
     field_t * field = fluid->fields[n];
-    const size_t * mysizes = domain->s_x1_mysizes;
-    const fftw_complex * restrict buf0 =
-      direction ? field->s_x1_array : field->s_x1_array_int;
-    fftw_complex * restrict buf1 =
-      direction ? field->s_x1_array_int : field->s_x1_array;
+    if(is_deep_copy){
+      // use memcpy
+      const size_t * mysizes = domain->s_x1_mysizes;
+      const fftw_complex * restrict buf0 = field->s_x1_array;
+      fftw_complex * restrict buf1 = field->s_x1_array_int;
 #if NDIMS == 2
-    const size_t nitems = mysizes[0] * mysizes[1];
+      const size_t nitems = mysizes[0] * mysizes[1];
 #else
-    const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
+      const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
 #endif
-    memcpy(buf1, buf0, nitems * sizeof(fftw_complex));
+      memcpy(buf1, buf0, nitems * sizeof(fftw_complex));
+    }else{
+      // swap buffers
+      fftw_complex * restrict tmp = field->s_x1_array;
+      field->s_x1_array = field->s_x1_array_int;
+      field->s_x1_array_int = tmp;
+    }
   }
   return 0;
 }

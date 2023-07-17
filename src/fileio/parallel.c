@@ -109,7 +109,9 @@ int fileio_r_nd_parallel(
   }
   // open file
   MPI_File fh = NULL;
-  if(0 != mpi_file_open(comm, fname, MPI_MODE_RDONLY, &fh)) return 1;
+  if(0 != mpi_file_open(comm, fname, MPI_MODE_RDONLY, &fh)){
+    return 1;
+  }
   // prepare file view
   MPI_Datatype basetype = MPI_BYTE;
   MPI_Datatype filetype = MPI_DATATYPE_NULL;
@@ -177,7 +179,9 @@ int fileio_w_nd_parallel(
   }
   // open file
   MPI_File fh = NULL;
-  if(0 != mpi_file_open(comm, fname, MPI_MODE_CREATE | MPI_MODE_RDWR, &fh)) return 1;
+  if(0 != mpi_file_open(comm, fname, MPI_MODE_CREATE | MPI_MODE_RDWR, &fh)){
+    return 1;
+  }
   // prepare file view
   MPI_Datatype basetype = MPI_BYTE;
   MPI_Datatype filetype = MPI_DATATYPE_NULL;

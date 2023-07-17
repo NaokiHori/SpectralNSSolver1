@@ -221,7 +221,9 @@ int transform_s2p(
     double * restrict aft
 ){
   if(!st.initialised){
-    if(0 != init(domain)) return 1;
+    if(0 != init(domain)){
+      return 1;
+    }
   }
   // inverse Fourier transform from spectral domain to physical domain
 #if NDIMS == 2
@@ -270,7 +272,9 @@ int transform_p2s(
     fftw_complex * restrict aft
 ){
   if(!st.initialised){
-    if(0 != init(domain)) return 1;
+    if(0 != init(domain)){
+      return 1;
+    }
   }
   // Fourier transform from physical domain to spectral domain
 #if NDIMS == 2

@@ -16,7 +16,9 @@ static int init(
     const domain_t * domain,
     const double time
 ){
-  if(0 != config.get_double("log_rate", &g_rate)) return 1;
+  if(0 != config.get_double("log_rate", &g_rate)){
+    return 1;
+  }
   g_next = g_rate * ceil(
       fmax(DBL_EPSILON, time) / g_rate
   );

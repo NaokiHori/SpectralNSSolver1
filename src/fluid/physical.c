@@ -54,7 +54,9 @@ int compute_physical_fields(
       masked[index] = mask[index] ? iarray[index] : 0.;
     }
     // iDFT, from spectral to physical
-    if(0 != transform_s2p(domain, masked, oarray)) return 1;
+    if(0 != transform_s2p(domain, masked, oarray)){
+      return 1;
+    }
   }
   return 0;
 }

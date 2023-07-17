@@ -114,19 +114,35 @@ int fluid_init(
   // load non-dimensional parameters
   double Re = 0.;
   double Sc = 0.;
-  if(0 != config.get_double("Re", &Re)) return 1;
-  if(0 != config.get_double("Sc", &Sc)) return 1;
+  if(0 != config.get_double("Re", &Re)){
+    return 1;
+  }
+  if(0 != config.get_double("Sc", &Sc)){
+    return 1;
+  }
   // allocate and prepare 2/3 dealiasing mask
-  if(0 != allocate_and_init_mask(domain, &fluid->s_x1_mask)) return 1;
+  if(0 != allocate_and_init_mask(domain, &fluid->s_x1_mask)){
+    return 1;
+  }
   // allocate buffers for flow each field and set diffusivity
-  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_ux], 1. / Re     )) return 1;
-  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_uy], 1. / Re     )) return 1;
+  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_ux], 1. / Re     )){
+    return 1;
+  }
+  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_uy], 1. / Re     )){
+    return 1;
+  }
 #if NDIMS == 3
-  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_uz], 1. / Re     )) return 1;
+  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_uz], 1. / Re     )){
+    return 1;
+  }
 #endif
-  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_sc], 1. / Re / Sc)) return 1;
+  if(0 != allocate_and_init_field(domain, &fluid->fields[enum_sc], 1. / Re / Sc)){
+    return 1;
+  }
   // load initial condition from files
-  if(0 != fluid_load(dirname, domain, fluid)) return 1;
+  if(0 != fluid_load(dirname, domain, fluid)){
+    return 1;
+  }
   return 0;
 }
 

@@ -13,8 +13,12 @@ static int load(
     const char dirname[],
     domain_t * domain
 ){
-  if(0 != fileio_r_serial(dirname, "glsizes", 1, (size_t [1]){NDIMS}, NPY_SZT, sizeof(size_t), domain->p_glsizes)) return 1;
-  if(0 != fileio_r_serial(dirname, "lengths", 1, (size_t [1]){NDIMS}, NPY_DBL, sizeof(double), domain->  lengths)) return 1;
+  if(0 != fileio_r_serial(dirname, "glsizes", 1, (size_t [1]){NDIMS}, NPY_SZT, sizeof(size_t), domain->p_glsizes)){
+    return 1;
+  }
+  if(0 != fileio_r_serial(dirname, "lengths", 1, (size_t [1]){NDIMS}, NPY_DBL, sizeof(double), domain->  lengths)){
+    return 1;
+  }
   int myrank = 0;
   sdecomp.get_comm_rank(domain->info, &myrank);
   if(0 == myrank){
@@ -141,7 +145,9 @@ int domain_init(
   }
 #endif
   // load parameters
-  if(0 != load(dirname, domain)) return 1;
+  if(0 != load(dirname, domain)){
+    return 1;
+  }
   // global domain size, spectral domain
 #if NDIMS == 2
   domain->s_glsizes[0] = domain->p_glsizes[0];

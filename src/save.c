@@ -30,7 +30,9 @@ static int init(
     const domain_t * domain,
     const double time
 ){
-  if(0 != config.get_double("save_rate", &g_rate)) return 1;
+  if(0 != config.get_double("save_rate", &g_rate)){
+    return 1;
+  }
   // schedule next event
   g_next = g_rate * ceil(
       fmax(DBL_EPSILON, time) / g_rate

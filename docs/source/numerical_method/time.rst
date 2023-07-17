@@ -32,7 +32,7 @@ I would like to integrate the following equations in time:
    =
    \wav{g}{\ix \iy},
 
-where :math:`f_x`, :math:`f_y`, and :math:`g` are non-linear terms gathered in the right-hand side given before.
+where :math:`f_x`, :math:`f_y`, and :math:`g` are the other terms such as the non-linear terms.
 
 In general, these equations have the following form:
 
