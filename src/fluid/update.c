@@ -31,16 +31,10 @@ static int update_field(
   const size_t * mysizes = domain->s_x1_mysizes;
   const double * restrict xfreqs = domain->x1_xfreqs;
   const double * restrict yfreqs = domain->x1_yfreqs;
-#if NDIMS == 3
   const double * restrict zfreqs = domain->x1_zfreqs;
-#endif
   // u^n contribution
   {
-#if NDIMS == 2
-    const size_t nitems = mysizes[0] * mysizes[1];
-#else
     const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
     for(size_t index = 0; index < nitems; index++){
       array1[index] = array0[index];
     }
@@ -53,19 +47,6 @@ static int update_field(
     if(0. == coef_a){
       continue;
     }
-#if NDIMS == 2
-    for(size_t index = 0, j = 0; j < mysizes[1]; j++){
-      const double ky = yfreqs[j];
-      for(size_t i = 0; i < mysizes[0]; i++, index++){
-        const double kx = xfreqs[i];
-        const double k2 =
-          + 1. * kx * kx
-          + 1. * ky * ky;
-        const double e = compute_factor(diffusivity, k2, coef_c, dt);
-        array1[index] += coef_a * dt * e * slope[index];
-      }
-    }
-#else
     for(size_t index = 0, k = 0; k < mysizes[2]; k++){
       const double kz = zfreqs[k];
       for(size_t j = 0; j < mysizes[1]; j++){
@@ -81,24 +62,10 @@ static int update_field(
         }
       }
     }
-#endif
   }
   // compute new field
   {
     const double coef_c = coef_cs[rkstep + 1];
-#if NDIMS == 2
-    for(size_t index = 0, j = 0; j < mysizes[1]; j++){
-      const double ky = yfreqs[j];
-      for(size_t i = 0; i < mysizes[0]; i++, index++){
-        const double kx = xfreqs[i];
-        const double k2 =
-          + 1. * kx * kx
-          + 1. * ky * ky;
-        const double e = compute_factor(diffusivity, k2, coef_c, dt);
-        array1[index] /= e;
-      }
-    }
-#else
     for(size_t index = 0, k = 0; k < mysizes[2]; k++){
       const double kz = zfreqs[k];
       for(size_t j = 0; j < mysizes[1]; j++){
@@ -114,7 +81,6 @@ static int update_field(
         }
       }
     }
-#endif
   }
   return 0;
 }
