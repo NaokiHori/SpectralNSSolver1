@@ -13,42 +13,21 @@ int decide_dt(
     const fluid_t * fluid,
     double * dt
 ){
-#if NDIMS == 2
   // y1 pencil
   const size_t * mysizes = domain->p_y1_mysizes;
   const double dx = domain->lengths[0] / domain->p_glsizes[0];
   const double dy = domain->lengths[1] / domain->p_glsizes[1];
-#else
-  // z1 pencil
-  const size_t * mysizes = domain->p_z1_mysizes;
-  const double dx = domain->lengths[0] / domain->p_glsizes[0];
-  const double dy = domain->lengths[1] / domain->p_glsizes[1];
-  const double dz = domain->lengths[2] / domain->p_glsizes[2];
-#endif
   // use physical velocity
-#if NDIMS == 2
   const double * restrict ux = fluid->fields[enum_ux]->p_y1_array;
   const double * restrict uy = fluid->fields[enum_uy]->p_y1_array;
-#else
-  const double * restrict ux = fluid->fields[enum_ux]->p_z1_array;
-  const double * restrict uy = fluid->fields[enum_uy]->p_z1_array;
-  const double * restrict uz = fluid->fields[enum_uz]->p_z1_array;
-#endif
   // val: local (physical) velocity / grid size
   // check maximum value in my range
   double maxval = 0.;
-#if NDIMS == 2
   const size_t nitems = mysizes[0] * mysizes[1];
-#else
-  const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
   for(size_t index = 0; index < nitems; index++){
     double val = 0.;
     val += fabs(ux[index]) / dx;
     val += fabs(uy[index]) / dy;
-#if NDIMS == 3
-    val += fabs(uz[index]) / dz;
-#endif
     maxval = fmax(maxval, val);
   }
   // communicate maximum value among all pencils
