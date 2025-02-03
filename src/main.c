@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stddef.h>
 #include <mpi.h>
 #include "config.h"
 #include "timer.h"
@@ -9,15 +10,15 @@
 #include "fileio.h"
 
 static int save_entrypoint(
-    const domain_t * domain,
-    const int step,
+    const domain_t * const domain,
+    const size_t step,
     const double time,
-    const fluid_t * fluid
-){
+    const fluid_t * const fluid
+) {
   char * dirname = NULL;
   save.prepare(domain, step, &dirname);
-  fileio_w_serial(dirname, "step", 0, NULL, NPY_INT, sizeof(   int), &step);
-  fileio_w_serial(dirname, "time", 0, NULL, NPY_DBL, sizeof(double), &time);
+  fileio.w_serial(dirname, "step", 0, NULL, fileio.npy_size_t, sizeof(size_t), &step);
+  fileio.w_serial(dirname, "time", 0, NULL, fileio.npy_double, sizeof(double), &time);
   domain_save(dirname, domain);
   fluid_save(dirname, domain, fluid);
   return 0;
@@ -26,7 +27,7 @@ static int save_entrypoint(
 int main(
     int argc,
     char * argv[]
-){
+) {
   // launch MPI
   MPI_Init(NULL, NULL);
   // check my rank to dump logs only from the main process
@@ -61,10 +62,10 @@ int main(
   // load current time step and simulation time units
   size_t step = 0;
   double time = 0.;
-  if(0 != fileio_r_serial(dirname_ic, "step", 0, NULL, NPY_SZT, sizeof(size_t), &step)){
+  if(0 != fileio.r_serial(dirname_ic, "step", 0, NULL, fileio.npy_size_t, sizeof(size_t), &step)){
     goto abort;
   }
-  if(0 != fileio_r_serial(dirname_ic, "time", 0, NULL, NPY_DBL, sizeof(double), &time)){
+  if(0 != fileio.r_serial(dirname_ic, "time", 0, NULL, fileio.npy_double, sizeof(double), &time)){
     goto abort;
   }
   if(0 == myrank) printf("start from: step %zu, time % .7e\n", step, time);

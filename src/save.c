@@ -74,7 +74,7 @@ static int prepare(
   // create directory
   if(0 == myrank){
     // although it may fail, anyway continue, which is designed to be safe
-    fileio_mkdir(g_dirname);
+    fileio.mkdir(g_dirname);
   }
   // wait for the main process to complete making directory
   MPI_Barrier(MPI_COMM_WORLD);

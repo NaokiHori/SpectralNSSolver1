@@ -13,10 +13,10 @@ static int load(
     const char dirname[],
     domain_t * domain
 ){
-  if(0 != fileio_r_serial(dirname, "glsizes", 1, (size_t [1]){NDIMS}, NPY_SZT, sizeof(size_t), domain->p_glsizes)){
+  if(0 != fileio.r_serial(dirname, "glsizes", 1, (size_t [1]){NDIMS}, fileio.npy_size_t, sizeof(size_t), domain->p_glsizes)){
     return 1;
   }
-  if(0 != fileio_r_serial(dirname, "lengths", 1, (size_t [1]){NDIMS}, NPY_DBL, sizeof(double), domain->  lengths)){
+  if(0 != fileio.r_serial(dirname, "lengths", 1, (size_t [1]){NDIMS}, fileio.npy_double, sizeof(double), domain->  lengths)){
     return 1;
   }
   int myrank = 0;
@@ -36,8 +36,8 @@ int domain_save(
   int myrank = 0;
   sdecomp.get_comm_rank(domain->info, &myrank);
   if(0 == myrank){
-    fileio_w_serial(dirname, "glsizes", 1, (size_t [1]){NDIMS}, NPY_SZT, sizeof(size_t), domain->p_glsizes);
-    fileio_w_serial(dirname, "lengths", 1, (size_t [1]){NDIMS}, NPY_DBL, sizeof(double), domain->  lengths);
+    fileio.w_serial(dirname, "glsizes", 1, (size_t [1]){NDIMS}, fileio.npy_size_t, sizeof(size_t), domain->p_glsizes);
+    fileio.w_serial(dirname, "lengths", 1, (size_t [1]){NDIMS}, fileio.npy_double, sizeof(double), domain->  lengths);
   }
   return 0;
 }

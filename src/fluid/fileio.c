@@ -35,7 +35,7 @@ int fluid_load(
     "sc",
   };
   for(size_t index = 0; index < sizeof(arrays) / sizeof(arrays[0]); index++){
-    if(0 != fileio_r_nd_parallel(
+    if(0 != fileio.r_nd_parallel(
           comm_cart,
           dirname,
           dsetnames[index],
@@ -43,7 +43,7 @@ int fluid_load(
           glsizes,
           mysizes,
           offsets,
-          NPY_CMP,
+          fileio.npy_complex,
           sizeof(fftw_complex),
           arrays[index]
     )) return 1;
@@ -84,7 +84,7 @@ int fluid_save(
     "sc",
   };
   for(size_t index = 0; index < sizeof(arrays) / sizeof(arrays[0]); index++){
-    if(0 != fileio_w_nd_parallel(
+    if(0 != fileio.w_nd_parallel(
         comm_cart,
         dirname,
         dsetnames[index],
@@ -92,7 +92,7 @@ int fluid_save(
         glsizes,
         mysizes,
         offsets,
-        NPY_CMP,
+        fileio.npy_complex,
         sizeof(fftw_complex),
         arrays[index]
     )) return 1;

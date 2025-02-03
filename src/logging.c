@@ -44,7 +44,7 @@ static void show_progress(
   int myrank = 0;
   sdecomp.get_comm_rank(domain->info, &myrank);
   if(0 == myrank){
-    FILE * fp = fileio_fopen(fname, "a");
+    FILE * const fp = fileio.fopen(fname, "a");
     if(NULL != fp){
       // show progress to standard output and file
       // output to stdout and file
@@ -54,7 +54,7 @@ static void show_progress(
 }
       MPRINT("step %zu, time %.1f, dt %.2e, elapsed %.1f [sec]\n", step, time, dt, wtime);
 #undef MPRINT
-      fileio_fclose(fp);
+      fileio.fclose(fp);
     }
   }
 }
@@ -113,10 +113,10 @@ static void check_divergence(
   int myrank = 0;
   sdecomp.get_comm_rank(domain->info, &myrank);
   if(0 == myrank){
-    FILE * fp = fileio_fopen(fname, "a");
+    FILE * const fp = fileio.fopen(fname, "a");
     if(NULL != fp){
       fprintf(fp, "%10zu % 8.2e % .1e\n", step, time, maxdiv);
-      fileio_fclose(fp);
+      fileio.fclose(fp);
     }
   }
 }
@@ -165,14 +165,14 @@ static void check_extrema(
   int myrank = 0;
   sdecomp.get_comm_rank(domain->info, &myrank);
   if(0 == myrank){
-    FILE * fp = fileio_fopen(fname, "a");
+    FILE * const fp = fileio.fopen(fname, "a");
     if(NULL != fp){
       fprintf(fp, "%10zu % 8.2e ", step, time);
       for(size_t dim = 0; dim < NDIMS + 1; dim++){
         const char del = NDIMS == dim ? '\n' : ' ';
         fprintf(fp, "% .4e%c", maxvals[dim], del);
       }
-      fileio_fclose(fp);
+      fileio.fclose(fp);
     }
   }
 }
@@ -223,11 +223,11 @@ static void check_energy(
   int myrank = 0;
   sdecomp.get_comm_rank(domain->info, &myrank);
   if(0 == myrank){
-    FILE * fp = fileio_fopen(fname, "a");
+    FILE * fp = fileio.fopen(fname, "a");
     if(NULL != fp){
       fprintf(fp, "%10zu % 8.2e ", step, time);
       fprintf(fp, "% .15e % .15e\n", vals[0], vals[1]);
-      fileio_fclose(fp);
+      fileio.fclose(fp);
     }
   }
 }
