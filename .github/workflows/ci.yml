@@ -53,7 +53,7 @@ jobs:
           git add include
           git add LICENSE
           git add Makefile
-          git add README.rst
+          git add README.md
           git add src
           # commit and push
           git commit -m "Extract ${{ matrix.dimension }}d sources" -a || true
