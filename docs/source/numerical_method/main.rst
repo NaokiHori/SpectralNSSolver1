@@ -9,7 +9,7 @@ I integrate the following three equations in time:
    \der{\wav{\ux}{\ix \iy}}{t}
    =
    \wav{h_x}{\ix \iy}
-   +
+   -
    \frac{\mkx}{\mkx^2 + \mky^2}
    \left(
       \mkx \wav{h_x}{\ix \iy}
@@ -24,7 +24,7 @@ I integrate the following three equations in time:
    \der{\wav{\uy}{\ix \iy}}{t}
    =
    \wav{h_y}{\ix \iy}
-   +
+   -
    \frac{\mky}{\mkx^2 + \mky^2}
    \left(
       \mkx \wav{h_x}{\ix \iy}

@@ -1,7 +1,6 @@
-mathjax_path = "https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 mathjax3_config = {
-    "TeX": {
-        "Macros": {
+    "tex": {
+        "macros": {
             "x"  : ["{x}"],
             "y"  : ["{y}"],
             "z"  : ["{z}"],
