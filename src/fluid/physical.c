@@ -25,11 +25,7 @@ int compute_physical_fields(
   // compute array size,
   //   which is same in this function
   const size_t * mysizes = domain->s_x1_mysizes;
-#if NDIMS == 2
-  const size_t nitems = mysizes[0] * mysizes[1];
-#else
   const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
   // compute velocities in the physical space,
   //   which is done by transforming spectral velocity (iDFT)
   if(!st.initialised){
@@ -42,11 +38,7 @@ int compute_physical_fields(
     // input spectral field
     const fftw_complex * restrict iarray = field->s_x1_array_int;
     // output physical field
-#if NDIMS == 2
-    double * restrict oarray = field->p_y1_array;
-#else
     double * restrict oarray = field->p_z1_array;
-#endif
     const bool * restrict mask = fluid->s_x1_mask;
     fftw_complex * restrict masked = st.masked;
     // mask input array

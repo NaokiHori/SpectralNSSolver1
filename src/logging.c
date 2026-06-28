@@ -69,28 +69,11 @@ static void check_divergence(
   const size_t * mysizes = domain->s_x1_mysizes;
   const double * restrict xfreqs = domain->x1_xfreqs;
   const double * restrict yfreqs = domain->x1_yfreqs;
-#if NDIMS == 3
   const double * restrict zfreqs = domain->x1_zfreqs;
-#endif
   const fftw_complex * restrict ux = fluid->fields[enum_ux]->s_x1_array;
   const fftw_complex * restrict uy = fluid->fields[enum_uy]->s_x1_array;
-#if NDIMS == 3
   const fftw_complex * restrict uz = fluid->fields[enum_uz]->s_x1_array;
-#endif
   double maxdiv = 0.;
-#if NDIMS == 2
-  for(size_t index = 0, j = 0; j < mysizes[1]; j++){
-    const double ky = yfreqs[j];
-    for(size_t i = 0; i < mysizes[0]; i++, index++){
-      const double kx = xfreqs[i];
-      const double div = cabs(
-          + I * kx * ux[index]
-          + I * ky * uy[index]
-      );
-      maxdiv = fmax(maxdiv, div);
-    }
-  }
-#else
   for(size_t index = 0, k = 0; k < mysizes[2]; k++){
     const double kz = zfreqs[k];
     for(size_t j = 0; j < mysizes[1]; j++){
@@ -106,7 +89,6 @@ static void check_divergence(
       }
     }
   }
-#endif
   MPI_Comm comm_cart = MPI_COMM_NULL;
   sdecomp.get_comm_cart(domain->info, &comm_cart);
   MPI_Allreduce(MPI_IN_PLACE, &maxdiv, 1, MPI_DOUBLE, MPI_MAX, comm_cart);
@@ -128,31 +110,18 @@ static void check_extrema(
     const size_t step,
     const fluid_t * fluid
 ){
-#if NDIMS == 2
-  const size_t * mysizes = domain->p_y1_mysizes;
-  const double * restrict ux = fluid->fields[enum_ux]->p_y1_array;
-  const double * restrict uy = fluid->fields[enum_uy]->p_y1_array;
-  const double * restrict sc = fluid->fields[enum_sc]->p_y1_array;
-#else
   const size_t * mysizes = domain->p_z1_mysizes;
   const double * restrict ux = fluid->fields[enum_ux]->p_z1_array;
   const double * restrict uy = fluid->fields[enum_uy]->p_z1_array;
   const double * restrict uz = fluid->fields[enum_uz]->p_z1_array;
   const double * restrict sc = fluid->fields[enum_sc]->p_z1_array;
-#endif
   double maxvals[NDIMS + 1] = {0.};
-#if NDIMS == 2
-  const size_t nitems = mysizes[0] * mysizes[1];
-#else
   const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
   for(size_t index = 0; index < nitems; index++){
     const double vals[NDIMS + 1] = {
       fabs(ux[index]),
       fabs(uy[index]),
-#if NDIMS == 3
       fabs(uz[index]),
-#endif
       fabs(sc[index]),
     };
     for(size_t dim = 0; dim < NDIMS + 1; dim++){
@@ -184,15 +153,6 @@ static void check_energy(
     const size_t step,
     const fluid_t * fluid
 ){
-#if NDIMS == 2
-  const size_t * mysizes = domain->p_y1_mysizes;
-  const double * restrict ux = fluid->fields[enum_ux]->p_y1_array;
-  const double * restrict uy = fluid->fields[enum_uy]->p_y1_array;
-  const double * restrict sc = fluid->fields[enum_sc]->p_y1_array;
-  const double cellsize = 1.
-    * domain->lengths[0] / domain->p_glsizes[0]
-    * domain->lengths[1] / domain->p_glsizes[1];
-#else
   const size_t * mysizes = domain->p_z1_mysizes;
   const double * restrict ux = fluid->fields[enum_ux]->p_z1_array;
   const double * restrict uy = fluid->fields[enum_uy]->p_z1_array;
@@ -202,19 +162,12 @@ static void check_energy(
     * domain->lengths[0] / domain->p_glsizes[0]
     * domain->lengths[1] / domain->p_glsizes[1]
     * domain->lengths[2] / domain->p_glsizes[2];
-#endif
   double vals[2] = {0.};
-#if NDIMS == 2
-  const size_t nitems = mysizes[0] * mysizes[1];
-#else
   const size_t nitems = mysizes[0] * mysizes[1] * mysizes[2];
-#endif
   for(size_t index = 0; index < nitems; index++){
     vals[0] += 0.5 * ux[index] * ux[index] * cellsize;
     vals[0] += 0.5 * uy[index] * uy[index] * cellsize;
-#if NDIMS == 3
     vals[0] += 0.5 * uz[index] * uz[index] * cellsize;
-#endif
     vals[1] += 0.5 * sc[index] * sc[index] * cellsize;
   }
   MPI_Comm comm_cart = MPI_COMM_NULL;
