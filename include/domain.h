@@ -17,25 +17,14 @@ typedef struct {
   size_t s_x1_mysizes[NDIMS];
   size_t s_x1_offsets[NDIMS];
   // physical domain
-#if NDIMS == 2
   size_t p_y1_mysizes[NDIMS];
   size_t p_y1_offsets[NDIMS];
-#else
-  size_t p_z1_mysizes[NDIMS];
-  size_t p_z1_offsets[NDIMS];
-#endif
   // wave numbers (k)
   int * restrict x1_xwaves;
   int * restrict x1_ywaves;
-#if NDIMS == 3
-  int * restrict x1_zwaves;
-#endif
   // angular fequency = k times (2 pi / L)
   double * restrict x1_xfreqs;
   double * restrict x1_yfreqs;
-#if NDIMS == 3
-  double * restrict x1_zfreqs;
-#endif
 } domain_t;
 
 extern int domain_init(
